@@ -19,12 +19,14 @@ class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
         self.n_mixes = 5
 
     def initialize(self):
-        url = "https://www.youtube.com/c/8BitSound"
         bootstrap = "https://github.com/JarbasSkills/skill-chiptune-planet/raw/dev/bootstrap.json"
         self.archive.bootstrap_from_url(bootstrap)
-        self.archive.monitor(url)
-        self.archive.setDaemon(True)
-        self.archive.start()
+        self.schedule_event(self._sync_db, random.randint(3600, 24 * 3600))
+
+    def _sync_db(self):
+        url = "https://www.youtube.com/c/8BitSound"
+        self.archive.parse_videos(url)
+        self.schedule_event(self._sync_db, random.randint(3600, 24 * 3600))
 
     def match_skill(self, phrase, media_type):
         score = 0

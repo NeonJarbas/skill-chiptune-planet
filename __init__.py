@@ -20,7 +20,7 @@ class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
 
     def initialize(self):
         url = "https://www.youtube.com/c/8BitSound"
-        bootstrap = f"https://raw.githubusercontent.com/OpenJarbas/streamindex/main/{self.archive.db.name}.json"
+        bootstrap = "https://github.com/JarbasSkills/skill-chiptune-planet/raw/dev/bootstrap.json"
         self.archive.bootstrap_from_url(bootstrap)
         self.archive.monitor(url)
         self.archive.setDaemon(True)

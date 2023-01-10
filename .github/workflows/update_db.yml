@@ -1,9 +1,12 @@
 name: Update Json Database
 on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron: '55 10,22 * * *'
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   scrap_and_commit:

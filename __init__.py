@@ -25,7 +25,7 @@ class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
         artists = []
         songs = []
         games = []
-        genre = ["Chiptune"]
+        genre = ["Chiptune", "chiptune cover"]
 
         for url, data in self.archive.items():
             t = data["title"].split("/ Chiptune Cover")[0].replace("♬", "").replace("—", "-").replace("–", "-").replace(
@@ -59,9 +59,9 @@ class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
 
     @ocp_search()
     def search_db(self, phrase, media_type):
-        base_score = 25 if media_type == MediaType.MUSIC else 0
+        base_score = 15 if media_type == MediaType.MUSIC else 0
         entities = self.ocp_voc_match(phrase)
-        base_score += 50 * len(entities)
+        base_score += 20 * len(entities)
 
         game = entities.get("game_name")
         artist = entities.get("artist_name")
@@ -71,6 +71,7 @@ class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
                 "music_genre" in entities  # generic skill match
 
         if skill:
+            base_score += 35
             pl = self.featured_media()
             for i in range(self.n_mixes):
                 random.shuffle(pl)
@@ -91,12 +92,15 @@ class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
 
             # only search db if user explicitly requested a known song
             if artist:
+                base_score += 15
                 candidates = [video for video in candidates
                               if artist.lower() in video["title"].lower()]
             elif song:
+                base_score += 10
                 candidates = [video for video in candidates
                               if song.lower() in video["title"].lower()]
             elif game:
+                base_score += 15
                 candidates = [video for video in candidates
                               if game.lower() in video["title"].lower()]
 
@@ -136,7 +140,7 @@ if __name__ == "__main__":
 
     s = ChiptunePlanetSkill(bus=FakeBus(), skill_id="t.fake")
 
-    for r in s.search_db("play Megadeth", MediaType.MUSIC):
+    for r in s.search_db("play Megadeth chiptune", MediaType.MUSIC):
         print(r)
         # {'title': 'Megadeth - We’ll Be Back ♬Chiptune Cover♬', 'artist': 'Chiptune Planet', 'match_confidence': 75, 'media_type': <MediaType.MUSIC: 2>, 'uri': 'youtube//https://youtube.com/watch?v=d9FZ65w6WtQ', 'playback': <PlaybackType.AUDIO: 2>, 'skill_icon': 'https://github.com/OpenVoiceOS/ovos-ocp-audio-plugin/raw/master/ovos_plugin_common_play/ocp/res/ui/images/ocp.png', 'skill_id': 't.fake', 'image': 'https://i.ytimg.com/vi/d9FZ65w6WtQ/sddefault.jpg?sqp=-oaymwEmCIAFEOAD8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEEgYihlMA8=&rs=AOn4CLBz7pp29jigsiF_pv_9zj2ROFd9cA', 'bg_image': 'https://i.ytimg.com/vi/d9FZ65w6WtQ/sddefault.jpg?sqp=-oaymwEmCIAFEOAD8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEEgYihlMA8=&rs=AOn4CLBz7pp29jigsiF_pv_9zj2ROFd9cA'}
         # {'title': 'Megadeth - In My Darkest Hour ♬Chiptune Cover♬', 'artist': 'Chiptune Planet', 'match_confidence': 75, 'media_type': <MediaType.MUSIC: 2>, 'uri': 'youtube//https://youtube.com/watch?v=zyaG1XQH6KY', 'playback': <PlaybackType.AUDIO: 2>, 'skill_icon': 'https://github.com/OpenVoiceOS/ovos-ocp-audio-plugin/raw/master/ovos_plugin_common_play/ocp/res/ui/images/ocp.png', 'skill_id': 't.fake', 'image': 'https://i.ytimg.com/vi/zyaG1XQH6KY/sddefault.jpg', 'bg_image': 'https://i.ytimg.com/vi/zyaG1XQH6KY/sddefault.jpg'}

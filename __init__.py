@@ -11,7 +11,7 @@ from ovos_workshop.skills.common_play import OVOSCommonPlaybackSkill
 
 class ChiptunePlanetSkill(OVOSCommonPlaybackSkill):
     def __init__(self, *args, **kwargs):
-        self.skill_icon = self.default_bg = join(dirname(__file__), "ui", "chiptuneplanet_icon.jpg")
+        self.skill_icon = self.default_bg = join(dirname(__file__), "res", "chiptuneplanet_icon.jpg")
         self.supported_media = [MediaType.MUSIC]
         self.n_mixes = 5
         self.archive = JsonStorageXDG("Chiptune Planet", subfolder="OCP")
